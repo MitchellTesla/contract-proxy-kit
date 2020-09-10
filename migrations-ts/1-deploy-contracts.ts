@@ -6,7 +6,7 @@ module.exports = function (deployer: Truffle.Deployer, network: string) {
   if (network === 'test' || network === 'local') {
     ;[
       'GnosisSafe',
-      'ProxyFactory',
+      'GnosisSafeProxyFactory',
       'MultiSend',
       'DefaultCallbackHandler',
       'Multistep',
@@ -15,6 +15,14 @@ module.exports = function (deployer: Truffle.Deployer, network: string) {
       'ConditionalTokens'
     ].forEach(deploy)
   }
-} as Truffle.Migration
+
+  deployer.deploy(
+    artifacts.require('CPKFactoryFacade'),
+    artifacts.require('CPKFactory').address,
+    artifacts.require('GnosisSafe').address,
+    web3.utils.keccak256(web3.utils.utf8ToHex('Contract Proxy Kit')),
+    artifacts.require('DefaultCallbackHandler').address,
+  );
+} as Truffle.Migration;
 
 export {}
